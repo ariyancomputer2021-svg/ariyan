@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>আরিয়ান কম্পিউটার - দৈনিক কাজের রেজিস্টার</title>
+    <!-- Tailwind CSS for Styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Hind Siliguri for Bengali) -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #f3f4f6;
+        }
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            .print-only {
+                display: block !important;
+            }
+            body {
+                background-color: white;
+            }
+        }
+    </style>
+</head>
+<body class="text-gray-800 antialiased min-h-screen flex flex-col">
+
+    <!-- Header Section -->
+    <header class="bg-gradient-to-r from-blue-700 via-indigo-700 to-blue-900 text-white shadow-lg no-print">
+        <div class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="text-center md:text-left">
+                    <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight flex items-center justify-center md:justify-start gap-3">
+                        <i class="fa-solid fa-desktop text-yellow-400"></i> আরিয়ান কম্পিউটার
+                    </h1>
+                    <p class="text-blue-200 text-sm sm:text-base mt-1 font-medium">
+                        <i class="fa-solid fa-user-tie text-yellow-400 mr-1"></i> প্রোঃ ইনাম হুসাইন
+                    </p>
+                </div>
+                <div class="flex flex-col sm:flex-row items-center gap-3 text-sm bg-blue-800/60 p-3 rounded-xl border border-blue-500/30">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-phone text-green-400"></i>
+                        <span>০১৭৩৯২১৩১২১</span>
+                    </div>
+                    <span class="hidden sm:inline text-blue-400">|</span>
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-phone text-green-400"></i>
+                        <span>০১৬১১৫৬৯৫৮৮</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+
+        <!-- Action Bar & Stats Summary -->
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8 no-print">
+            <!-- Stats Cards -->
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4">
+                <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center text-xl font-bold">
+                    <i class="fa-solid fa-calculator"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-500 font-medium">আজকের মোট ইনকাম</p>
+                    <h3 class="text-2xl font-bold text-gray-800" id="todayIncome">৳ ০</h3>
+                </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4">
+                <div class="w-12 h-12 bg-green-100 text-green-600 rounded-xl flex items-center justify-center text-xl font-bold">
+                    <i class="fa-solid fa-list-check"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-500 font-medium">আজকের মোট এন্ট্রি</p>
+                    <h3 class="text-2xl font-bold text-gray-800" id="todayCount">০ টি</h3>
+                </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4">
+                <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center text-xl font-bold">
+                    <i class="fa-solid fa-coins"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-500 font-medium">সর্বমোট জমা (সকল)</p>
+                    <h3 class="text-2xl font-bold text-gray-800" id="totalIncome">৳ ০</h3>
+                </div>
+            </div>
+
+            <!-- Backup & Export Controls -->
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-center gap-2">
+                <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">ডাটা ব্যাকআপ ও সাপোর্ট</span>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="exportData()" class="px-3 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-semibold rounded-lg border border-emerald-200 transition flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-download"></i> ব্যাকআপ সেভ
+                    </button>
+                    <label class="px-3 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-semibold rounded-lg border border-indigo-200 transition flex items-center justify-center gap-1.5 cursor-pointer text-center">
+                        <i class="fa-solid fa-upload"></i> রিস্টোর
+                        <input type="file" id="importFile" accept=".json" class="hidden" onchange="importData(event)">
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Work Form & List Layout -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Input Form Column -->
+            <div class="lg:col-span-1 no-print">
+                <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-6 sticky top-6">
+                    <h2 class="text-lg font-bold text-gray-800 mb-4 pb-2 border-b border-gray-100 flex items-center gap-2">
+                        <i class="fa-solid fa-square-plus text-blue-600"></i> নতুন কাজ এনট্রি করুন
+                    </h2>
+                    
+                    <form id="workForm" class="space-y-4">
+                        <!-- Date -->
+                        <div>
+                            <label class="block text-xs font-medium text-gray-700 mb-1">তারিখ</label>
+                            <input type="date" id="workDate" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                        </div>
+
+                        <!-- Service Category -->
+                        <div>
+                            <label class="block text-xs font-medium text-gray-700 mb-1">কাজের ধরন/ক্যাটাগরি</label>
+                            <select id="workCategory" onchange="handleCategoryChange()" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                                <option value="ফটোকপি">ফটোকপি (Photocopy)</option>
+                                <option value="কালার ফটোকপি">কালার ফটোকপি (Color Photocopy)</option>
+                                <option value="অনলাইন আবেদন">অনলাইন আবেদন (Online Application)</option>
+                                <option value="ছবি/ফটোগ্রাফ">ছবি তোলা / প্রিন্ট (Photo)</option>
+                                <option value="পাসপোর্ট সেবা">পাসপোর্ট সংক্রান্ত কাজ</option>
+                                <option value="কম্পোজ & প্রিন্ট">কম্পোজ ও প্রিন্ট (Compose & Print)</option>
+                                <option value="অন্যান্য">অন্যান্য সেবা (Other)</option>
+                            </select>
+                        </div>
+
+                        <!-- Specific Title / Details -->
+                        <div>
+                            <label class="block text-xs font-medium text-gray-700 mb-1">কাজের বিবরণ (ঐচ্ছিক)</label>
+                            <input type="text" id="workDetails" placeholder="যেমন: এনআইডি কপি, ড্রাইভিং লাইসেন্স আবেদন" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                        </div>
+
+                        <!-- Quantity and Amount -->
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-medium text-gray-700 mb-1">পরিমাণ / পিস</label>
+                                <input type="number" id="workQty" min="1" value="1" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-700 mb-1">মোট টাকা (৳)</label>
+                                <input type="number" id="workAmount" min="0" step="any" placeholder="0" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                            </div>
+                        </div>
+
+                        <!-- Note -->
+                        <div>
+                            <label class="block text-xs font-medium text-gray-700 mb-1">মন্তব্য/নোট (যদি থাকে)</label>
+                            <input type="text" id="workNote" placeholder="যেমন: ১০ টাকা বাকি বা বিশেষ নোট" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-lg shadow-md hover:shadow-lg transition duration-200 flex items-center justify-center gap-2 text-sm mt-2">
+                            <i class="fa-solid fa-circle-check"></i> এনট্রি সেভ করুন
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Table & History Column -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-6">
+                    
+                    <!-- Printable Header (Visible only during printing) -->
+                    <div class="hidden print-only mb-6 text-center border-b pb-4">
+                        <h1 class="text-2xl font-bold">আরিয়ান কম্পিউটার</h1>
+                        <p class="text-sm">প্রোঃ ইনাম হুসাইন | মোবাঃ ০১৭৩৯২১৩১২১, ০১৬১১৫৬৯৫৮৮</p>
+                        <p class="text-xs text-gray-500 mt-1">দৈনিক কাজের হিসাব বিবরণী</p>
+                    </div>
+
+                    <!-- Filter & Tools -->
+                    <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 mb-6 no-print">
+                        <div class="flex items-center gap-2">
+                            <input type="date" id="filterDate" onchange="renderTable()" class="px-3 py-1.5 border border-gray-300 rounded-lg text-xs focus:ring-2 focus:ring-blue-500">
+                            <button onclick="clearDateFilter()" class="px-2.5 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg text-xs font-medium transition" title="সকল ডাটা দেখুন">
+                                সব দেখুন
+                            </button>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <button onclick="exportToCSV()" class="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white rounded-lg text-xs font-medium transition flex items-center gap-1 shadow-sm">
+                                <i class="fa-solid fa-file-excel"></i> এক্সেল
+                            </button>
+                            <button onclick="window.print()" class="px-3 py-1.5 bg-slate-700 hover:bg-slate-800 text-white rounded-lg text-xs font-medium transition flex items-center gap-1 shadow-sm">
+                                <i class="fa-solid fa-print"></i> প্রিন্ট / PDF
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Search Input -->
+                    <div class="mb-4 no-print">
+                        <div class="relative">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-gray-400 text-xs"></i>
+                            <input type="text" id="searchInput" onkeyup="renderTable()" placeholder="কাজের বিবরণ বা ক্যাটাগরি দিয়ে খুঁজুন..." class="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-xs focus:ring-2 focus:ring-blue-500">
+                        </div>
+                    </div>
+
+                    <!-- Records Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-gray-50 border-b border-gray-200 text-xs text-gray-600 uppercase font-semibold">
+                                    <th class="py-3 px-3">তারিখ</th>
+                                    <th class="py-3 px-3">কাজের বিবরণ</th>
+                                    <th class="py-3 px-3 text-center">পরিমাণ</th>
+                                    <th class="py-3 px-3 text-right">টাকা (৳)</th>
+                                    <th class="py-3 px-3 text-center no-print">অ্যাকশন</th>
+                                </tr>
+                            </thead>
+                            <tbody id="workTableBody" class="divide-y divide-gray-100 text-sm">
+                                <!-- Dynamic rows will appear here -->
+                            </tbody>
+                            <tfoot id="tableFooter" class="bg-gray-50 font-bold border-t border-gray-200 text-gray-800">
+                                <!-- Footer summary -->
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div id="emptyState" class="hidden text-center py-12">
+                        <i class="fa-solid fa-folder-open text-gray-300 text-4xl mb-3"></i>
+                        <p class="text-gray-500 text-sm">কোনো এনট্রি পাওয়া যায়নি!</p>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 py-4 mt-auto no-print">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-gray-500">
+            &copy; <span id="year"></span> আরিয়ান কম্পিউটার (প্রোঃ ইনাম হুসাইন). সর্বস্বত্ব সংরক্ষিত।
+        </div>
+    </footer>
+
+    <!-- Custom UI Message Modal -->
+    <div id="customModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center hidden z-50 no-print">
+        <div class="bg-white rounded-2xl p-6 max-w-sm w-full mx-4 shadow-xl border border-gray-100">
+            <h3 id="modalTitle" class="text-lg font-bold text-gray-800 mb-2">বিজ্ঞপ্তি</h3>
+            <p id="modalMessage" class="text-sm text-gray-600 mb-5">বার্তা</p>
+            <div class="flex justify-end gap-2" id="modalActions">
+                <button onclick="closeModal()" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-700 transition">ঠিক আছে</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Key for LocalStorage
+        const STORAGE_KEY = 'aryan_computer_works_db';
+
+        // State Management
+        let works = [];
+
+        // Set default date to today
+        document.getElementById('workDate').valueAsDate = new Date();
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Initialize App
+        window.onload = function() {
+            loadWorks();
+            renderTable();
+        };
+
+        // Load data from LocalStorage
+        function loadWorks() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+                try {
+                    works = JSON.parse(stored);
+                } catch (e) {
+                    works = [];
+                }
+            } else {
+                works = [];
+            }
+        }
+
+        // Save data to LocalStorage
+        function saveWorks() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(works));
+            renderTable();
+        }
+
+        // Category change helper
+        function handleCategoryChange() {
+            const cat = document.getElementById('workCategory').value;
+            const detailsInput = document.getElementById('workDetails');
+            if (!detailsInput.value) {
+                if (cat === 'ফটোকপি') detailsInput.placeholder = 'যেমন: এনআইডি / সার্টিফিকেট কপি';
+                else if (cat === 'কালার ফটোকপি') detailsInput.placeholder = 'যেমন: ছবি / রঙিন ডকুমেন্ট';
+                else if (cat === 'অনলাইন আবেদন') detailsInput.placeholder = 'যেমন: সরকারি চাকরি / ভর্তি আবেদন';
+                else if (cat === 'পাসপোর্ট সেবা') detailsInput.placeholder = 'যেমন: রেনিউ / নতুন আবেদন';
+            }
+        }
+
+        // Add Work Entry Form Submission
+        document.getElementById('workForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const date = document.getElementById('workDate').value;
+            const category = document.getElementById('workCategory').value;
+            const details = document.getElementById('workDetails').value.trim();
+            const qty = parseInt(document.getElementById('workQty').value) || 1;
+            const amount = parseFloat(document.getElementById('workAmount').value) || 0;
+            const note = document.getElementById('workNote').value.trim();
+
+            if (!date || amount <= 0) {
+                showAlert('দয়া করে সঠিক তারিখ এবং টাকার পরিমাণ দিন।');
+                return;
+            }
+
+            const newEntry = {
+                id: Date.now().toString(),
+                date: date,
+                category: category,
+                details: details || category,
+                qty: qty,
+                amount: amount,
+                note: note,
+                createdAt: new Date().toISOString()
+            };
+
+            works.unshift(newEntry); // Add to beginning of array
+            saveWorks();
+
+            // Reset Form (Keep current date)
+            const currentDate = document.getElementById('workDate').value;
+            document.getElementById('workForm').reset();
+            document.getElementById('workDate').value = currentDate;
+            document.getElementById('workQty').value = 1;
+
+            showAlert('কাজ সফলভাবে সেভ করা হয়েছে!');
+        });
+
+        // Render Table & Summary
+        function renderTable() {
+            const tbody = document.getElementById('workTableBody');
+            const tfooter = document.getElementById('tableFooter');
+            const emptyState = document.getElementById('emptyState');
+            const filterDate = document.getElementById('filterDate').value;
+            const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+
+            tbody.innerHTML = '';
+
+            // Filter logic
+            let filtered = works.filter(item => {
+                const matchesDate = filterDate ? item.date === filterDate : true;
+                const matchesSearch = item.category.toLowerCase().includes(searchQuery) ||
+                                      item.details.toLowerCase().includes(searchQuery) ||
+                                      (item.note && item.note.toLowerCase().includes(searchQuery));
+                return matchesDate && matchesSearch;
+            });
+
+            // Calculate Overall & Today Stats
+            const todayStr = new Date().toISOString().split('T')[0];
+            let todayTotalInc = 0;
+            let todayTotalCount = 0;
+            let grandTotalInc = 0;
+
+            works.forEach(item => {
+                grandTotalInc += Number(item.amount);
+                if (item.date === todayStr) {
+                    todayTotalInc += Number(item.amount);
+                    todayTotalCount++;
+                }
+            });
+
+            document.getElementById('todayIncome').textContent = `৳ ${todayTotalInc.toLocaleString('bn-BD')}`;
+            document.getElementById('todayCount').textContent = `${todayTotalCount.toLocaleString('bn-BD')} টি`;
+            document.getElementById('totalIncome').textContent = `৳ ${grandTotalInc.toLocaleString('bn-BD')}`;
+
+            if (filtered.length === 0) {
+                emptyState.classList.remove('hidden');
+                tfooter.innerHTML = '';
+                return;
+            } else {
+                emptyState.classList.add('hidden');
+            }
+
+            // Populate Table
+            let pageQtyTotal = 0;
+            let pageAmountTotal = 0;
+
+            filtered.forEach(item => {
+                pageQtyTotal += Number(item.qty);
+                pageAmountTotal += Number(item.amount);
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-blue-50/50 transition border-b border-gray-100";
+
+                tr.innerHTML = `
+                    <td class="py-3 px-3 text-xs text-gray-500 whitespace-nowrap">${formatDateBn(item.date)}</td>
+                    <td class="py-3 px-3">
+                        <div class="font-semibold text-gray-800 text-sm">${escapeHtml(item.details)}</div>
+                        <div class="text-xs text-indigo-600 flex items-center gap-2 mt-0.5">
+                            <span class="bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100">${escapeHtml(item.category)}</span>
+                            ${item.note ? `<span class="text-gray-400 italic"><i class="fa-regular fa-note-sticky mr-1"></i>${escapeHtml(item.note)}</span>` : ''}
+                        </div>
+                    </td>
+                    <td class="py-3 px-3 text-center text-sm font-medium text-gray-700">${item.qty} পিস</td>
+                    <td class="py-3 px-3 text-right font-bold text-gray-900 text-sm">৳ ${Number(item.amount).toLocaleString('bn-BD')}</td>
+                    <td class="py-3 px-3 text-center no-print">
+                        <button onclick="confirmDelete('${item.id}')" class="text-red-500 hover:text-red-700 p-1.5 rounded-lg hover:bg-red-50 transition" title="মুছে ফেলুন">
+                            <i class="fa-regular fa-trash-can"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // Table Footer Summary
+            tfooter.innerHTML = `
+                <tr>
+                    <td colspan="2" class="py-3 px-3 text-right text-xs">মোট প্রদর্শনকৃত:</td>
+                    <td class="py-3 px-3 text-center text-sm">${pageQtyTotal} পিস</td>
+                    <td class="py-3 px-3 text-right text-sm text-blue-700">৳ ${pageAmountTotal.toLocaleString('bn-BD')}</td>
+                    <td class="no-print"></td>
+                </tr>
+            `;
+        }
+
+        // Delete confirmation
+        function confirmDelete(id) {
+            const modal = document.getElementById('customModal');
+            document.getElementById('modalTitle').textContent = "এনট্রি মুছুন";
+            document.getElementById('modalMessage').textContent = "আপনি কি নিশ্চিত যে এই এনট্রিটি মুছে ফেলতে চান?";
+            
+            const actions = document.getElementById('modalActions');
+            actions.innerHTML = `
+                <button onclick="closeModal()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-xs font-semibold hover:bg-gray-300 transition">বাতিল</button>
+                <button onclick="deleteEntry('${id}')" class="px-4 py-2 bg-red-600 text-white rounded-lg text-xs font-semibold hover:bg-red-700 transition">হ্যাঁ, মুছুন</button>
+            `;
+            modal.classList.remove('hidden');
+        }
+
+        function deleteEntry(id) {
+            works = works.filter(item => item.id !== id);
+            saveWorks();
+            closeModal();
+            showAlert('এনট্রি সফলভাবে মুছে ফেলা হয়েছে।');
+        }
+
+        // Filter Controls
+        function clearDateFilter() {
+            document.getElementById('filterDate').value = '';
+            document.getElementById('searchInput').value = '';
+            renderTable();
+        }
+
+        // Backup Export (JSON Download)
+        function exportData() {
+            if (works.length === 0) {
+                showAlert('ব্যাকআপ নেওয়ার মতো কোনো ডাটা নেই!');
+                return;
+            }
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(works, null, 2));
+            const downloadAnchor = document.createElement('a');
+            const fileName = `Aryan_Computer_Backup_${new Date().toISOString().split('T')[0]}.json`;
+            
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", fileName);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
+        // Backup Import (Restore JSON)
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedWorks = JSON.parse(e.target.result);
+                    if (Array.isArray(importedWorks)) {
+                        works = importedWorks;
+                        saveWorks();
+                        showAlert('ডাটা সফলভাবে রিস্টোর/আপলোড করা হয়েছে!');
+                    } else {
+                        showAlert('ভুল ফাইল ფორম্যাট! সঠিক ব্যাকআপ ফাইল নির্বাচন করুন।');
+                    }
+                } catch (err) {
+                    showAlert('ফাইলটি পড়া যাচ্ছে না! অনুগ্রহ করে সঠিক ব্যাকআপ ফাইল বেছে নিন।');
+                }
+            };
+            reader.readAsText(file);
+            // Reset input
+            event.target.value = '';
+        }
+
+        // Export Table Data to CSV (Excel)
+        function exportToCSV() {
+            if (works.length === 0) {
+                showAlert('এক্সেল ফাইলের জন্য কোনো ডাটা নেই!');
+                return;
+            }
+
+            let csvContent = "\uFEFF"; // UTF-8 BOM for Bengali language support
+            csvContent += "তারিখ,ক্যাটাগরি,বিবরণ,পরিমাণ,টাকা,নোট\n";
+
+            works.forEach(row => {
+                const details = `"${(row.details || '').replace(/"/g, '""')}"`;
+                const note = `"${(row.note || '').replace(/"/g, '""')}"`;
+                csvContent += `${row.date},${row.category},${details},${row.qty},${row.amount},${note}\n`;
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", `Aryan_Computer_Daily_Report_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Helpers
+        function formatDateBn(dateStr) {
+            if (!dateStr) return '';
+            const parts = dateStr.split('-');
+            if (parts.length !== 3) return dateStr;
+            return `${parts[2]}/${parts[1]}/${parts[0]}`;
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            return text.replace(/&/g, "&amp;")
+                       .replace(/</g, "&lt;")
+                       .replace(/>/g, "&gt;")
+                       .replace(/"/g, "&quot;")
+                       .replace(/'/g, "&#039;");
+        }
+
+        function showAlert(msg) {
+            const modal = document.getElementById('customModal');
+            document.getElementById('modalTitle').textContent = "বিজ্ঞপ্তি";
+            document.getElementById('modalMessage').textContent = msg;
+            
+            const actions = document.getElementById('modalActions');
+            actions.innerHTML = `
+                <button onclick="closeModal()" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-700 transition">ঠিক আছে</button>
+            `;
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('customModal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
